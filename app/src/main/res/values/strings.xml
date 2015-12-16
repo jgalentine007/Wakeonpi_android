@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Wakeonpi</string>
+    <string name="title_activity_main">wakeonpi</string>
 </resources>
