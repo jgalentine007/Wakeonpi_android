@@ -22,11 +22,12 @@ public class MainActivity extends ActionBarActivity {
     private final Context actContext = this;
 
     // preferences and consts
-    private SharedPreferences prefs;
+    private static SharedPreferences prefs;
     public static final String PREF_consumerKey = "consumerKey";
     public static final String PREF_consumerSecret = "consumerSecret";
     public static final String PREF_token = "token";
     public static final String PREF_tokenSecret = "tokenSecret";
+    public static final String PREF_computerList = "computerList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +37,8 @@ public class MainActivity extends ActionBarActivity {
         // get preferences
         prefs = PreferenceManager.getDefaultSharedPreferences(actContext);
 
-        // prepare twitter
-        twit = new MyTwitter(
-                prefs.getString(PREF_consumerKey, ""),
-                prefs.getString(PREF_consumerSecret, ""),
-                prefs.getString(PREF_token, ""),
-                prefs.getString(PREF_tokenSecret, "")
-        );
-
-        twit.init();
-
         // prepare computers ListView
-        String data = "pc1,pc2";
+        String data = prefs.getString(PREF_computerList, "");
         final List<String> items = Arrays.asList(data.split("\\s*,\\s*"));
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         final ListView lvComputers = (ListView) findViewById(R.id.lvComputers);
@@ -59,12 +50,25 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         String message = "WOL " + parent.getItemAtPosition(position);
+                        freshTwitter();
                         twit.sendMessage(message);
-                        Toast.makeText(getApplicationContext(), "Trying to wakeup.", Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 }
         );
+    }
+
+    private void freshTwitter() {
+        // prepare twitter
+        twit = new MyTwitter(
+                actContext,
+                prefs.getString(PREF_consumerKey, ""),
+                prefs.getString(PREF_consumerSecret, ""),
+                prefs.getString(PREF_token, ""),
+                prefs.getString(PREF_tokenSecret, "")
+        );
+
+        twit.init();
     }
 
     @Override

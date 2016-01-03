@@ -1,6 +1,8 @@
 package jgalentine007.wakeonpi;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -13,8 +15,10 @@ class MyTwitter {
     private Twitter twitter;
     private AccessToken accessToken;
     private long myId;
+    private Context context;
 
-    public MyTwitter(String consumerKey, String consumerSecret, String token, String tokenSecret){
+    public MyTwitter(Context context, String consumerKey, String consumerSecret, String token, String tokenSecret){
+        this.context = context;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.token = token;
@@ -45,6 +49,14 @@ class MyTwitter {
             }
 
             return true;
+        }
+
+        protected void onPostExecute(Boolean result){
+
+            if (result == true)
+                Toast.makeText(context, "Trying to wakeup.", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, "Twitter error, check settings?", Toast.LENGTH_SHORT).show();
         }
     }
     private class InitTask extends AsyncTask<Void,Void,Boolean> {

@@ -31,10 +31,30 @@ public class SettingsActivity extends PreferenceActivity {
         Map<String, Map <String, String>> map = (Map<String, Map <String, String>>) yaml.load(data);
 
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(MainActivity.PREF_token, (map.get("twitter")).get("access_token"));
-        editor.putString(MainActivity.PREF_tokenSecret, (map.get("twitter")).get("access_token_secret"));
-        editor.putString(MainActivity.PREF_consumerKey, (map.get("twitter")).get("consumer_key"));
-        editor.putString(MainActivity.PREF_consumerSecret, (map.get("twitter")).get("consumer_secret"));
+        try {
+            editor.putString(MainActivity.PREF_token, (map.get("twitter")).get("access_token"));
+        } catch (Exception e){
+            editor.putString(MainActivity.PREF_token, "");
+        }
+
+        try {
+            editor.putString(MainActivity.PREF_tokenSecret, (map.get("twitter")).get("access_token_secret"));
+        } catch (Exception e){
+            editor.putString(MainActivity.PREF_tokenSecret, "");
+        }
+
+        try {
+            editor.putString(MainActivity.PREF_consumerKey, (map.get("twitter")).get("consumer_key"));
+        } catch (Exception e){
+            editor.putString(MainActivity.PREF_consumerKey, "");
+        }
+
+        try {
+            editor.putString(MainActivity.PREF_consumerSecret, (map.get("twitter")).get("consumer_secret"));
+        } catch (Exception e){
+            editor.putString(MainActivity.PREF_consumerKey, "");
+        }
+
         editor.apply();
     }
 
