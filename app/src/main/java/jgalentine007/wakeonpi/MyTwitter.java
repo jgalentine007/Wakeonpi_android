@@ -7,11 +7,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
-
-/**
- * Created by jgalentine on 1/2/2016.
- * Party on!
- */
 class MyTwitter {
     private String consumerKey, consumerSecret, token, tokenSecret;
     private TwitterFactory factory;
