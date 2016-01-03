@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jgalentine007.wakeonpi">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,5 +28,4 @@
                 android:value="jgalentine007.wakeonpi.MainActivity" />
         </activity>
     </application>
-
 </manifest>
