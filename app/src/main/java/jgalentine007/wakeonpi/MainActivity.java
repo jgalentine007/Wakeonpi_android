@@ -19,6 +19,7 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     private MyTwitter twit;
+    private ArrayAdapter<String> lvComputersAdapter;
     private final Context actContext = this;
 
     // preferences and consts
@@ -37,12 +38,11 @@ public class MainActivity extends ActionBarActivity {
         // get preferences
         prefs = PreferenceManager.getDefaultSharedPreferences(actContext);
 
-        // prepare computers ListView
-        String data = prefs.getString(PREF_computerList, "");
-        final List<String> items = Arrays.asList(data.split("\\s*,\\s*"));
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        // prepare computers ListView and refreshes data
+        lvComputersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         final ListView lvComputers = (ListView) findViewById(R.id.lvComputers);
-        lvComputers.setAdapter(adapter);
+        lvComputers.setAdapter(lvComputersAdapter);
+        Refresh();
 
         // long click event handler
         lvComputers.setOnItemLongClickListener(
@@ -56,8 +56,19 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
         );
+
+        // shared preference event handler
+        SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals(PREF_computerList))
+                    Refresh();
+            }
+        };
+
+        prefs.registerOnSharedPreferenceChangeListener(mListener);
     }
 
+    // creates new twitter4j object for refreshing configuration values
     private void freshTwitter() {
         // prepare twitter
         twit = new MyTwitter(
@@ -79,18 +90,6 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    public void Settings(){
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    public void Refresh(){
-
-    }
-
-    public void About(){
-        Toast.makeText(getApplicationContext(), "The secret to humor is surprise.", Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -109,4 +108,20 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void Settings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void Refresh(){
+        String data = prefs.getString(PREF_computerList, "");
+        final List<String> items = Arrays.asList(data.split("\\s*,\\s*"));
+        lvComputersAdapter.clear();
+        lvComputersAdapter.addAll(items);
+        lvComputersAdapter.notifyDataSetChanged();
+    }
+
+    public void About(){
+        Toast.makeText(getApplicationContext(), "The secret to humor is surprise.", Toast.LENGTH_LONG).show();
+    }
 }

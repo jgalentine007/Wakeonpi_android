@@ -39,6 +39,7 @@ class MyTwitter {
         new SendTask().execute(message);
     }
 
+    // For sending direct messages using twitter4j
     private class SendTask extends AsyncTask<String,Void,Boolean>{
         protected Boolean doInBackground(String... message){
             try {
@@ -59,6 +60,8 @@ class MyTwitter {
                 Toast.makeText(context, "Twitter error, check settings?", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // Fetch our user ID so we can send direct messages to ourself
     private class InitTask extends AsyncTask<Void,Void,Boolean> {
 
         protected Boolean doInBackground(Void... params){

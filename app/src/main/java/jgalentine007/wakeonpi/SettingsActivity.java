@@ -12,9 +12,11 @@ import android.preference.PreferenceActivity;
 import android.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,32 +27,46 @@ public class SettingsActivity extends PreferenceActivity {
 
     // ugly as f*ck but only temporary :)
     private static void setTwitterPrefs(String data){
-        // fix string if it has nbsp's from things like e-mail clients
-        data = data.replace("\u00A0", " ");
+        // load yaml data
+        data = data.replace("\u00A0", " "); // fix string if it has nbsp's from things like e-mail clients
         Yaml yaml = new Yaml();
-        Map<String, Map <String, String>> map = (Map<String, Map <String, String>>) yaml.load(data);
+        Map<String, Map <String, String>> conf = (Map<String, Map <String, String>>) yaml.load(data);
 
         SharedPreferences.Editor editor = prefs.edit();
+
+        // create comma delimited list of computers
         try {
-            editor.putString(MainActivity.PREF_token, (map.get("twitter")).get("access_token"));
+            Map<String, String> computerMap = conf.get("computers");
+            List<String> computers = new ArrayList<String>();
+            for (Map.Entry<String, String> entry : computerMap.entrySet())
+                computers.add(entry.getKey());
+            String computerStr = TextUtils.join(",", computers);
+            editor.putString(MainActivity.PREF_computerList, computerStr);
+        } catch (Exception e){
+            editor.putString(MainActivity.PREF_computerList, "");
+        }
+
+        // twitter configuration items
+        try {
+            editor.putString(MainActivity.PREF_token, (conf.get("twitter")).get("access_token"));
         } catch (Exception e){
             editor.putString(MainActivity.PREF_token, "");
         }
 
         try {
-            editor.putString(MainActivity.PREF_tokenSecret, (map.get("twitter")).get("access_token_secret"));
+            editor.putString(MainActivity.PREF_tokenSecret, (conf.get("twitter")).get("access_token_secret"));
         } catch (Exception e){
             editor.putString(MainActivity.PREF_tokenSecret, "");
         }
 
         try {
-            editor.putString(MainActivity.PREF_consumerKey, (map.get("twitter")).get("consumer_key"));
+            editor.putString(MainActivity.PREF_consumerKey, (conf.get("twitter")).get("consumer_key"));
         } catch (Exception e){
             editor.putString(MainActivity.PREF_consumerKey, "");
         }
 
         try {
-            editor.putString(MainActivity.PREF_consumerSecret, (map.get("twitter")).get("consumer_secret"));
+            editor.putString(MainActivity.PREF_consumerSecret, (conf.get("twitter")).get("consumer_secret"));
         } catch (Exception e){
             editor.putString(MainActivity.PREF_consumerKey, "");
         }
@@ -66,6 +82,7 @@ public class SettingsActivity extends PreferenceActivity {
             if (preference.getKey().equals("twitter_conf")) {
 
                 setTwitterPrefs(stringValue);
+
 
             } else {
                 // For all other preferences, set the summary to the value's
