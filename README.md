@@ -35,3 +35,9 @@ Copy your `wakeonpi.conf` configuration data to your phone (by e-mail or twitter
 ### Wake a computer
 
 To wake a computer, press and hold it's name for a few seconds (Android long press.)  A notification message will appear.
+
+## To-do
+
+Allow login with twitter username and password
+Store twitter credentials using Android account manager
+Pull computer names using `wol list` command and twitter4j stream listener
